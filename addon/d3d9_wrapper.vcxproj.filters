@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="com_wrapper">
+      <UniqueIdentifier>{ded00aed-ce7e-4432-b270-381c29a67108}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="com_wrapper.h">
+      <Filter>com_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="com_wrapper_method_dcl.h">
+      <Filter>com_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="d3d9_wrapper.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="d3d9_wrapper.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="com_wrapper.cpp">
+      <Filter>com_wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="com_wrapper_method_impl.cpp">
+      <Filter>com_wrapper</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source.def">
+      <Filter>sources</Filter>
+    </None>
+    <None Include="com_wrapper_dev_methods.inc">
+      <Filter>com_wrapper</Filter>
+    </None>
+    <None Include="com_wrapper_obj_methods.inc">
+      <Filter>com_wrapper</Filter>
+    </None>
+  </ItemGroup>
+</Project>
