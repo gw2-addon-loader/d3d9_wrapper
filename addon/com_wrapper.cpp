@@ -116,14 +116,15 @@ void wrap_InitEvents()
 	#define WRAPPED_METH_PREFIX(b) \
 		 preCallEvents[METH_DEV_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(DEV_##b, PRE_))); \
 		postCallEvents[METH_DEV_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(DEV_##b, POST_))); \
+		g_main_vtable[METH_DEV_##b] = wrap_pass_vtable[METH_DEV_##b]; \
 		__SPECIAL_IGNORANCE
-
 	#include "com_wrapper_dev_methods.inc"
 	#undef WRAPPED_METH_PREFIX	
 
-#define WRAPPED_METH_PREFIX(b) \
+	#define WRAPPED_METH_PREFIX(b) \
 		 preCallEvents[METH_OBJ_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(OBJ_##b, PRE_))); \
 		postCallEvents[METH_OBJ_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(OBJ_##b, POST_))); \
+		g_main_vtable[METH_OBJ_##b] = wrap_pass_vtable[METH_OBJ_##b]; \
 		__SPECIAL_IGNORANCE
 	#include "com_wrapper_obj_methods.inc"
 	#undef WRAPPED_METH_PREFIX

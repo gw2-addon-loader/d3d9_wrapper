@@ -17,7 +17,7 @@ gw2al_addon_dsc gAddonDeps[] = {
 };
 
 gw2al_addon_dsc gAddonDsc = {
-	L"d3d9 wrapper",
+	L"d3d9_wrapper",
 	L"Wrapper for d3d9 API that includes hooking and custom d3d9 loading",
 	1,
 	0,
@@ -79,15 +79,20 @@ gw2al_addon_dsc* gw2addon_get_description()
 	return &gAddonDsc;
 }
 
+#pragma pack(push, 1)
 typedef struct d3d9_obj_CreateDevice_cp {
 	IDirect3D9* obj;
+	UINT pad0;
 	UINT v1;
+	UINT pad1;
 	D3DDEVTYPE v2;
 	HWND v3;
+	UINT pad2;
 	DWORD v4;
 	D3DPRESENT_PARAMETERS* v5;
 	IDirect3DDevice9** ret;
 } d3d9_obj_CreateDevice_cp;
+#pragma pack(pop)
 
 void OnPostDeviceCreate(d3d9_obj_CreateDevice_cp* data)
 {
