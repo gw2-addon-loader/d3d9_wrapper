@@ -21,7 +21,7 @@ gw2al_addon_dsc gAddonDsc = {
 	L"Wrapper for d3d9 API that includes hooking and custom d3d9 loading",
 	1,
 	0,
-	1,
+	2,
 	gAddonDeps
 };
 
@@ -94,9 +94,19 @@ typedef struct d3d9_obj_CreateDevice_cp {
 } d3d9_obj_CreateDevice_cp;
 #pragma pack(pop)
 
-void OnPostDeviceCreate(d3d9_obj_CreateDevice_cp* data)
+void OnPostDeviceCreate(wrap_event_data* data)
 {
-	*data->ret = wrap_CreateDevice(*data->ret);
+	d3d9_obj_CreateDevice_cp* apiParams = (d3d9_obj_CreateDevice_cp*)data->stackPtr;
+
+	*apiParams->ret = wrap_CreateDevice(*apiParams->ret);
+}
+
+void OnPostWrappedRelease(wrap_event_data* data)
+{
+	if (*((LONG*)data->ret) == 0)
+	{
+		free(*data->stackPtr);
+	}
 }
 
 vtable_wrap_mode d3d9_wrapper_event_state[METHOD_WRAP_COUNT] = { WRAP_PASSTHRU };
@@ -156,7 +166,23 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 		0
 	);
 
+	gAPI->watch_event(
+		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_DEV_Release")),
+		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		(gw2al_api_event_handler)&OnPostWrappedRelease,
+		0
+	);
+
+	gAPI->watch_event(
+		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_Release")),
+		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		(gw2al_api_event_handler)&OnPostWrappedRelease,
+		0
+	);
+
 	d3d9_wrapper_enable_event(METH_OBJ_CreateDevice, WRAP_CB_POST);
+	d3d9_wrapper_enable_event(METH_OBJ_Release, WRAP_CB_POST);
+	d3d9_wrapper_enable_event(METH_DEV_Release, WRAP_CB_POST);
 
 	gAPI->register_function(&d3d9_wrapper_enable_event, gAPI->hash_name((wchar_t*)L"D3D_wrapper_enable_event"));
 

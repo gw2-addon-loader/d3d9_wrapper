@@ -95,12 +95,19 @@ void wrap_SwitchMethod(d3d9_vtable_method method, vtable_wrap_mode mode)
 	g_main_vtable[method] = wrap_vtable_arr[mode][method];
 }
 
-void wrap_InvokeEvent(d3d9_vtable_method method, UINT isPre, wrapped_com_obj** stackPtr)
+void wrap_InvokeEvent(d3d9_vtable_method method, UINT isPre, wrapped_com_obj** stackPtr, void* ret)
 {
+	//megai2: maybe passing api return in pre event is too much, but adding that later for some reason will be bad thing
+	wrap_event_data eventData = {
+		ret,
+		stackPtr
+	};
+
 	if (isPre)
-		gAPI->trigger_event(preCallEvents[method], stackPtr);
-	else 
-		gAPI->trigger_event(postCallEvents[method], stackPtr);
+		gAPI->trigger_event(preCallEvents[method], &eventData);
+	else {
+		gAPI->trigger_event(postCallEvents[method], &eventData);
+	}
 }
 
 void wrap_InitEvents()

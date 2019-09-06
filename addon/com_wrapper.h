@@ -78,9 +78,14 @@ typedef enum vtable_wrap_mode {
 IDirect3DDevice9* wrap_CreateDevice(IDirect3DDevice9* origDev);
 IDirect3D9* wrap_CreateObj(IDirect3D9* origObj);
 
+typedef struct wrap_event_data {
+	void* ret;
+	wrapped_com_obj** stackPtr;
+} wrap_event_data;
+
 void wrap_SwitchMethod(d3d9_vtable_method method, vtable_wrap_mode mode);
 
-void wrap_InvokeEvent(d3d9_vtable_method method, UINT isPre, wrapped_com_obj** stackPtr);
+void wrap_InvokeEvent(d3d9_vtable_method method, UINT isPre, wrapped_com_obj** stackPtr, void* ret);
 
 void wrap_InitEvents();
 
