@@ -163,7 +163,7 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_CreateDevice")),
 		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostDeviceCreate,
-		0
+		-1
 	);
 
 	gAPI->watch_event(
