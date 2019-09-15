@@ -109,6 +109,17 @@ void OnPostWrappedRelease(wrap_event_data* data)
 	}
 }
 
+void OnPostObjWrappedRelease(wrap_event_data* data)
+{
+	if (*((LONG*)data->ret) == 0)
+	{
+		free(*data->stackPtr);
+
+		//TODO: find  more nice way to detect client unload
+		gAPI->client_unload();
+	}
+}
+
 vtable_wrap_mode d3d9_wrapper_event_state[METHOD_WRAP_COUNT] = { WRAP_PASSTHRU };
 
 void d3d9_wrapper_enable_event(d3d9_vtable_method method, vtable_wrap_mode mode)
@@ -176,7 +187,7 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 	gAPI->watch_event(
 		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_Release")),
 		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
-		(gw2al_api_event_handler)&OnPostWrappedRelease,
+		(gw2al_api_event_handler)&OnPostObjWrappedRelease,
 		0
 	);
 
