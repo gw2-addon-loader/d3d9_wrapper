@@ -169,6 +169,7 @@ typedef wchar_t* (*pD3D9_wrapper_custom_d3d9_lib_query)();
 		Triggers after Device->Release() API call execution
 	
 */
+#define D3D9_WRAPPER_WATCH_EVENT(subscriber,name,proc,priority) gAPI->watch_event(gAPI->query_event(gAPI->hash_name((wchar_t*)name)), gAPI->hash_name((wchar_t*)subscriber),(gw2al_api_event_handler)&proc, priority)
 
 typedef struct D3D9_wrapper {
 	pD3D9_wrapper_enable_event enable_event;
