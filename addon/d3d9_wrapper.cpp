@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "build_version.h"
 
 //gw2addon_get_description
 //gw2addon_load
@@ -21,7 +22,7 @@ gw2al_addon_dsc gAddonDsc = {
 	L"Wrapper for d3d9 API that includes hooking and custom d3d9 loading",
 	1,
 	0,
-	2,
+	BUILD_VERSION_REV,
 	gAddonDeps
 };
 
