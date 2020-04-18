@@ -105,9 +105,8 @@ void wrap_InvokeEvent(d3d9_vtable_method method, UINT isPre, wrapped_com_obj** s
 
 	if (isPre)
 		gAPI->trigger_event(preCallEvents[method], &eventData);
-	else {
+	else 
 		gAPI->trigger_event(postCallEvents[method], &eventData);
-	}
 }
 
 void wrap_InitEvents()
