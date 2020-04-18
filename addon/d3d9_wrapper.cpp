@@ -27,6 +27,7 @@ gw2al_addon_dsc gAddonDsc = {
 };
 
 HMODULE custom_d3d9_module;
+gw2al_hashed_name eventEnableProcName;
 
 gw2al_core_vtable* instance::api = NULL;
 
@@ -166,8 +167,11 @@ void d3d9_wrapper_enable_event(d3d9_vtable_method method, vtable_wrap_mode mode)
 gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 {
 	gAPI = core_api;
-		
+
+	eventEnableProcName = gAPI->hash_name((wchar_t*)L"D3D_wrapper_enable_event");
+
 	gAPI->register_function(&OnD3D9Create, GW2AL_CORE_FUNN_D3DCREATE_HOOK);
+	gAPI->register_function(&d3d9_wrapper_enable_event, eventEnableProcName);
 
 	wrap_InitEvents();
 	
@@ -196,15 +200,27 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 	d3d9_wrapper_enable_event(METH_OBJ_Release, WRAP_CB_POST);
 	d3d9_wrapper_enable_event(METH_DEV_Release, WRAP_CB_POST);
 
-	gAPI->register_function(&d3d9_wrapper_enable_event, gAPI->hash_name((wchar_t*)L"D3D_wrapper_enable_event"));
-
 	return GW2AL_OK;
 }
 
 gw2al_api_ret gw2addon_unload(int gameExiting)
 {
-	//TODO cleanup
+	gAPI->unwatch_event(
+		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_CreateDevice")),
+		gAPI->hash_name((wchar_t*)L"d3d9 wrapper")
+	);
 
+	gAPI->unwatch_event(
+		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_DEV_Release")),
+		gAPI->hash_name((wchar_t*)L"d3d9 wrapper")
+	);
+
+	gAPI->unwatch_event(
+		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_Release")),
+		gAPI->hash_name((wchar_t*)L"d3d9 wrapper")
+	);
+
+	gAPI->unregister_function(eventEnableProcName);
 	gAPI->unregister_function(GW2AL_CORE_FUNN_D3DCREATE_HOOK);
 
 	if (custom_d3d9_module)
