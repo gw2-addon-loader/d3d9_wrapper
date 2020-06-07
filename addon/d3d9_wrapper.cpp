@@ -118,7 +118,7 @@ void OnPostObjWrappedRelease(wrap_event_data* data)
 		free(*data->stackPtr);
 
 		//TODO: find  more nice way to detect client unload
-		gAPI->client_unload();
+		//gAPI->client_unload();
 	}
 }
 
