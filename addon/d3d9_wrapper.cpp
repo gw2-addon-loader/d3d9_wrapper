@@ -94,19 +94,37 @@ typedef struct d3d9_obj_CreateDevice_cp {
 	D3DPRESENT_PARAMETERS* v5;
 	IDirect3DDevice9** ret;
 } d3d9_obj_CreateDevice_cp;
+
+typedef struct d3d9_dev_Release_cp {
+	IDirect3DDevice9* dev;
+};
 #pragma pack(pop)
+
+IDirect3DDevice9* hwDevice = nullptr;
 
 void OnPostDeviceCreate(wrap_event_data* data)
 {
 	d3d9_obj_CreateDevice_cp* apiParams = (d3d9_obj_CreateDevice_cp*)data->stackPtr;
 
 	*apiParams->ret = wrap_CreateDevice(*apiParams->ret);
+	
+	//i guess this one device should be created one time thru entire gw2 run,
+	//so we track can track unload of addons on it
+	if (apiParams->v2 == D3DDEVTYPE_HAL)
+	{
+		hwDevice = *apiParams->ret;
+	}
 }
 
 void OnPostWrappedRelease(wrap_event_data* data)
 {
+	d3d9_dev_Release_cp* apiParams = (d3d9_dev_Release_cp*)data->stackPtr;
+
 	if (*((LONG*)data->ret) == 0)
 	{
+		if (apiParams->dev == hwDevice)
+			gAPI->client_unload();
+
 		free(*data->stackPtr);
 	}
 }
@@ -114,12 +132,7 @@ void OnPostWrappedRelease(wrap_event_data* data)
 void OnPostObjWrappedRelease(wrap_event_data* data)
 {
 	if (*((LONG*)data->ret) == 0)
-	{
 		free(*data->stackPtr);
-
-		//TODO: find  more nice way to detect client unload
-		//gAPI->client_unload();
-	}
 }
 
 vtable_wrap_mode d3d9_wrapper_event_state[METHOD_WRAP_COUNT] = { WRAP_PASSTHRU };
