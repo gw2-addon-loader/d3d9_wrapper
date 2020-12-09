@@ -21,7 +21,7 @@ gw2al_addon_dsc gAddonDsc = {
 	L"d3d9_wrapper",
 	L"Wrapper for d3d9 API that includes hooking and custom d3d9 loading",
 	1,
-	1,
+	2,
 	BUILD_VERSION_REV,
 	gAddonDeps
 };
