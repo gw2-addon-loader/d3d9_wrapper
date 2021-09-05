@@ -61,5 +61,11 @@
     <None Include="com_wrapper_obj_methods.inc">
       <Filter>com_wrapper</Filter>
     </None>
+    <None Include="com_wrapper_swc_methods.inc">
+      <Filter>com_wrapper</Filter>
+    </None>
+    <None Include="com_wrapper_dev11_methods.inc">
+      <Filter>com_wrapper</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -15,6 +15,14 @@ static void* wrap_pass_vtable[METHOD_WRAP_COUNT+1] = {
 #include "com_wrapper_obj_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
+#define WRAPPED_METH_PREFIX(b) wrap_pass_dev11_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_pass_swc_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
 	0
 };
 
@@ -26,6 +34,14 @@ static void* wrap_pre_vtable[METHOD_WRAP_COUNT+1] = {
 
 #define WRAPPED_METH_PREFIX(b) wrap_pre_obj_##b, __SPECIAL_IGNORANCE
 #include "com_wrapper_obj_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_pre_dev11_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_pre_swc_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_swc_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
 	0
@@ -40,6 +56,15 @@ static void* wrap_post_vtable[METHOD_WRAP_COUNT+1] = {
 #define WRAPPED_METH_PREFIX(b) wrap_post_obj_##b, __SPECIAL_IGNORANCE
 #include "com_wrapper_obj_methods.inc"
 #undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_post_dev11_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_post_swc_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
 	0
 };
 
@@ -51,6 +76,14 @@ static void* wrap_prepost_vtable[METHOD_WRAP_COUNT+1] = {
 
 #define WRAPPED_METH_PREFIX(b) wrap_prepost_obj_##b, __SPECIAL_IGNORANCE
 #include "com_wrapper_obj_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_prepost_dev11_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_prepost_swc_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_swc_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
 	0
@@ -88,6 +121,26 @@ IDirect3D9 * wrap_CreateObj(IDirect3D9 * origObj)
 	ret->orig_obj = origObj;
 
 	return (IDirect3D9*)ret;
+}
+
+ID3D11Device* wrap_CreateDevice11(ID3D11Device* origDev)
+{
+	wrapped_com_obj * ret = (wrapped_com_obj*)malloc(sizeof(wrapped_com_obj));
+
+	ret->vtable = (com_vtable*)&g_main_vtable[METH_DEV11_QueryInterface];
+	ret->orig_dev11 = origDev;
+
+	return (ID3D11Device*)ret;
+}
+
+IDXGISwapChain* wrap_CreateSwapchain(IDXGISwapChain* origSwc)
+{
+	wrapped_com_obj* ret = (wrapped_com_obj*)malloc(sizeof(wrapped_com_obj));
+
+	ret->vtable = (com_vtable*)&g_main_vtable[METH_SWC_QueryInterface];
+	ret->orig_swc = origSwc;
+
+	return (IDXGISwapChain*)ret;
 }
 
 void wrap_SwitchMethod(d3d9_vtable_method method, vtable_wrap_mode mode)
@@ -135,5 +188,20 @@ void wrap_InitEvents()
 	#include "com_wrapper_obj_methods.inc"
 	#undef WRAPPED_METH_PREFIX
 
+	#define WRAPPED_METH_PREFIX(b) \
+		 preCallEvents[METH_DEV11_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(DEV11_##b, PRE_))); \
+		postCallEvents[METH_DEV11_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(DEV11_##b, POST_))); \
+		g_main_vtable[METH_DEV11_##b] = wrap_pass_vtable[METH_DEV11_##b]; \
+		__SPECIAL_IGNORANCE
+	#include "com_wrapper_dev11_methods.inc"
+	#undef WRAPPED_METH_PREFIX
+
+	#define WRAPPED_METH_PREFIX(b) \
+		 preCallEvents[METH_SWC_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(SWC_##b, PRE_))); \
+		postCallEvents[METH_SWC_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(SWC_##b, POST_))); \
+		g_main_vtable[METH_SWC_##b] = wrap_pass_vtable[METH_SWC_##b]; \
+		__SPECIAL_IGNORANCE
+	#include "com_wrapper_swc_methods.inc"
+	#undef WRAPPED_METH_PREFIX
 
 }

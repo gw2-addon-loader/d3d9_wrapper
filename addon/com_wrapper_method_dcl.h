@@ -36,4 +36,36 @@
 #include "com_wrapper_obj_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
+#define WRAPPED_METH_PREFIX(b) wrap_pass_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_pre_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_post_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_prepost_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_pass_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_pre_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_post_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_prepost_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
 #undef CUSTOM_ENDLINE_DEF

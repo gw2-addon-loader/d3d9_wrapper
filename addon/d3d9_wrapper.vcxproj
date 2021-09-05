@@ -178,8 +178,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="com_wrapper_dev11_methods.inc" />
     <None Include="com_wrapper_dev_methods.inc" />
     <None Include="com_wrapper_obj_methods.inc" />
+    <None Include="com_wrapper_swc_methods.inc" />
     <None Include="Source.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

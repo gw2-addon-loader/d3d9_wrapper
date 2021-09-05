@@ -80,6 +80,18 @@
 #undef WRAPPED_METH_PREFIX
 #undef WRAPPED_THIS_PREFIX
 
+#define WRAPPED_THIS_PREFIX _this->orig_dev11
+#define WRAPPED_METH_PREFIX(b) wrap_pass_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX
+
+#define WRAPPED_THIS_PREFIX _this->orig_swc
+#define WRAPPED_METH_PREFIX(b) wrap_pass_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX
+
 #undef WRAP_CALLTHRU_PRE_IMPL 
 #undef WRAP_CALLTHRU_POST_IMPL
 #undef WRAP_CALLTHRU_POST_IMPL_
@@ -156,7 +168,74 @@
 #undef WRAP_CALLTHRU_POST_IMPL
 #undef WRAP_CALLTHRU_POST_IMPL_
 
+#define WRAP_CALLTHRU_PRE_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_DEV11_,a), 1, b, NULL)
+#define WRAP_CALLTHRU_POST_IMPL_(a,b) 
+#define WRAP_CALLTHRU_POST_IMPL(a,b) 
+#define WRAPPED_THIS_PREFIX _this->orig_dev11
+#define WRAPPED_METH_PREFIX(b) wrap_pre_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX 
+#undef WRAP_CALLTHRU_PRE_IMPL 
+#undef WRAP_CALLTHRU_POST_IMPL
+#undef WRAP_CALLTHRU_POST_IMPL_
 
+#define WRAP_CALLTHRU_PRE_IMPL(a,b) 
+#define WRAP_CALLTHRU_POST_IMPL_(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_DEV11_,a), 0, b, NULL) 
+#define WRAP_CALLTHRU_POST_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_DEV11_,a), 0, b, &ret) 
+#define WRAPPED_THIS_PREFIX _this->orig_dev11
+#define WRAPPED_METH_PREFIX(b) wrap_post_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX 
+#undef WRAP_CALLTHRU_PRE_IMPL 
+#undef WRAP_CALLTHRU_POST_IMPL
+#undef WRAP_CALLTHRU_POST_IMPL_
 
+#define WRAP_CALLTHRU_PRE_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_DEV11_,a), 1, b, NULL) 
+#define WRAP_CALLTHRU_POST_IMPL_(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_DEV11_,a), 0, b, NULL)
+#define WRAP_CALLTHRU_POST_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_DEV11_,a), 0, b, &ret) 
+#define WRAPPED_THIS_PREFIX _this->orig_dev11
+#define WRAPPED_METH_PREFIX(b) wrap_prepost_dev11_##b
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX 
+#undef WRAP_CALLTHRU_PRE_IMPL 
+#undef WRAP_CALLTHRU_POST_IMPL
+#undef WRAP_CALLTHRU_POST_IMPL_
 
+#define WRAP_CALLTHRU_PRE_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_SWC_,a), 1, b, NULL)
+#define WRAP_CALLTHRU_POST_IMPL_(a,b) 
+#define WRAP_CALLTHRU_POST_IMPL(a,b) 
+#define WRAPPED_THIS_PREFIX _this->orig_swc
+#define WRAPPED_METH_PREFIX(b) wrap_pre_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX 
+#undef WRAP_CALLTHRU_PRE_IMPL 
+#undef WRAP_CALLTHRU_POST_IMPL
+#undef WRAP_CALLTHRU_POST_IMPL_
 
+#define WRAP_CALLTHRU_PRE_IMPL(a,b) 
+#define WRAP_CALLTHRU_POST_IMPL_(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_SWC_,a), 0, b, NULL) 
+#define WRAP_CALLTHRU_POST_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_SWC_,a), 0, b, &ret) 
+#define WRAPPED_THIS_PREFIX _this->orig_swc
+#define WRAPPED_METH_PREFIX(b) wrap_post_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX 
+#undef WRAP_CALLTHRU_PRE_IMPL 
+#undef WRAP_CALLTHRU_POST_IMPL
+#undef WRAP_CALLTHRU_POST_IMPL_
+
+#define WRAP_CALLTHRU_PRE_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_SWC_,a), 1, b, NULL) 
+#define WRAP_CALLTHRU_POST_IMPL_(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_SWC_,a), 0, b, NULL) 
+#define WRAP_CALLTHRU_POST_IMPL(a,b) wrap_InvokeEvent(CONVERT_TO_METH_NAME(METH_SWC_,a), 0, b, &ret) 
+#define WRAPPED_THIS_PREFIX _this->orig_swc
+#define WRAPPED_METH_PREFIX(b) wrap_prepost_swc_##b
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+#undef WRAPPED_THIS_PREFIX 
+#undef WRAP_CALLTHRU_PRE_IMPL 
+#undef WRAP_CALLTHRU_POST_IMPL
+#undef WRAP_CALLTHRU_POST_IMPL_

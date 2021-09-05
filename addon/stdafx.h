@@ -5,6 +5,7 @@
 #define WIN32_LEAN_AND_MEAN  
 #include <windows.h>
 #include <d3d9.h>
+#include <d3d11.h>
 #include "../include/gw2al_api.h"
 #include "com_wrapper.h"
 #include "com_wrapper_method_dcl.h"

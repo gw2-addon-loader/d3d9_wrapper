@@ -6,13 +6,17 @@ typedef struct com_vtable {
 	void* methods[1024];
 } com_vtable;
 
+#pragma pack(push, 1)
 typedef struct wrapped_com_obj {
 	com_vtable* vtable;
 	union {
 		IDirect3D9* orig_obj;
 		IDirect3DDevice9* orig_dev;
+		ID3D11Device* orig_dev11;
+		IDXGISwapChain* orig_swc;
 	};
 } wrapped_com_obj;
+#pragma pack(pop)
 
 #define WRAPPED_METH_DECL_(a,b) WRAPPED_METH_PREFIX(b)
 #define WRAPPED_METH_DECL(b) WRAPPED_METH_DECL_(HRESULT, b)
@@ -60,7 +64,16 @@ typedef enum d3d9_vtable_method {
 
 #define WRAPPED_METH_PREFIX(b) METH_OBJ_##b, __SPECIAL_IGNORANCE
 #include "com_wrapper_obj_methods.inc"
-#undef WRAPPED_METH_PREFIX	
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) METH_DEV11_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dev11_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) METH_SWC_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
 	METHOD_WRAP_COUNT
 } d3d9_vtable_method;
 
@@ -77,6 +90,8 @@ typedef enum vtable_wrap_mode {
 
 IDirect3DDevice9* wrap_CreateDevice(IDirect3DDevice9* origDev);
 IDirect3D9* wrap_CreateObj(IDirect3D9* origObj);
+ID3D11Device* wrap_CreateDevice11(ID3D11Device* origDev);
+IDXGISwapChain* wrap_CreateSwapchain(IDXGISwapChain* origSwc);
 
 typedef struct wrap_event_data {
 	void* ret;
