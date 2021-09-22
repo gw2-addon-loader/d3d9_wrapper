@@ -69,8 +69,10 @@ IDirect3D9* OnD3D9Create()
 	return wrap_CreateObj(res);
 }
 
-#define DX11_CREATE_FDEF IDXGIAdapter* pAdapter, D3D_DRIVER_TYPE DriverType, HMODULE Software, UINT Flags, const D3D_FEATURE_LEVEL* pFeatureLevels, UINT FeatureLevels, UINT SDKVersion, const DXGI_SWAP_CHAIN_DESC* pSwapChainDesc, IDXGISwapChain** ppSwapChain, ID3D11Device** ppDevice, D3D_FEATURE_LEVEL* pFeatureLevel, ID3D11DeviceContext** ppImmediateContext
+#define DX11_CREATE_FDEF IDXGIAdapter* pAdapter, D3D_DRIVER_TYPE DriverType, HMODULE Software, UINT Flags, const D3D_FEATURE_LEVEL* pFeatureLevels, UINT FeatureLevels, UINT SDKVersion, const DXGI_SWAP_CHAIN_DESC* pSwapChainDesc, IDXGISwapChain** ppSwapChain, ID3D11Device5** ppDevice, D3D_FEATURE_LEVEL* pFeatureLevel, ID3D11DeviceContext** ppImmediateContext
 #define DX11_CREATE_PLIST pAdapter, DriverType, Software, Flags, pFeatureLevels, FeatureLevels, SDKVersion, pSwapChainDesc, ppSwapChain, ppDevice, pFeatureLevel, ppImmediateContext
+
+static int insideD3D11DeviceCreate = 0;
 
 HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 {
@@ -106,7 +108,9 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 		return 0;
 	}
 
+	++insideD3D11DeviceCreate;
 	HRESULT res = d3d11create_fun(DX11_CREATE_PLIST);
+	--insideD3D11DeviceCreate;
 
 	if (res != S_OK)
 	{
@@ -114,8 +118,12 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 		return 0;
 	}
 
-	*ppDevice = wrap_CreateDevice11(*ppDevice);
-	*ppSwapChain = wrap_CreateSwapchain(*ppSwapChain);
+	if (insideD3D11DeviceCreate == 0)
+	{
+		*ppDevice = wrap_CreateDevice11(*ppDevice);
+		if (ppSwapChain)
+			*ppSwapChain = wrap_CreateSwapchain(*ppSwapChain);
+	}
 
 	return res;
 }
@@ -142,13 +150,13 @@ typedef struct d3d9_obj_CreateDevice_cp {
 typedef struct d3d9_dev_Release_cp {
 	union {
 		IDirect3DDevice9* d9;
-		ID3D11Device* d11;
+		ID3D11Device5* d11;
 	} udev;
 } d3d9_dev_Release_cp;
 #pragma pack(pop)
 
 IDirect3DDevice9* hwDevice = nullptr;
-ID3D11Device* hwDevice11 = nullptr;
+ID3D11Device5* hwDevice11 = nullptr;
 
 void OnPostDeviceCreate(wrap_event_data* data)
 {

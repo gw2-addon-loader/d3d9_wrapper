@@ -123,14 +123,14 @@ IDirect3D9 * wrap_CreateObj(IDirect3D9 * origObj)
 	return (IDirect3D9*)ret;
 }
 
-ID3D11Device* wrap_CreateDevice11(ID3D11Device* origDev)
+ID3D11Device5* wrap_CreateDevice11(ID3D11Device5* origDev)
 {
 	wrapped_com_obj * ret = (wrapped_com_obj*)malloc(sizeof(wrapped_com_obj));
 
 	ret->vtable = (com_vtable*)&g_main_vtable[METH_DEV11_QueryInterface];
 	ret->orig_dev11 = origDev;
 
-	return (ID3D11Device*)ret;
+	return (ID3D11Device5*)ret;
 }
 
 IDXGISwapChain* wrap_CreateSwapchain(IDXGISwapChain* origSwc)
