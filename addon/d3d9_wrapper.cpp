@@ -19,7 +19,9 @@ gw2al_addon_dsc gAddonDsc = {
 	gAddonDeps
 };
 
-HMODULE custom_d3d_module;
+HMODULE custom_d3d9_module;
+HMODULE custom_d3d11_module;
+HMODULE custom_dxgi_module;
 gw2al_hashed_name eventEnableProcName;
 
 gw2al_core_vtable* instance::api = NULL;
@@ -35,14 +37,14 @@ IDirect3D9* OnD3D9Create()
 	if (GetD3D9CustomLib)
 	{
 		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading custom lib from D3D_wrapper_custom_d3d9_lib_query");
-		custom_d3d_module = LoadLibraryW(GetD3D9CustomLib());
+		custom_d3d9_module = LoadLibraryW(GetD3D9CustomLib());
 	}
 	else {
 		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading system d3d9");
-		custom_d3d_module = LoadLibraryW(infoBuf);
+		custom_d3d9_module = LoadLibraryW(infoBuf);
 	}
 	
-	if (!custom_d3d_module)
+	if (!custom_d3d9_module)
 	{
 		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"d3d9 library failed to load");
 		return 0;
@@ -50,7 +52,7 @@ IDirect3D9* OnD3D9Create()
 
 	typedef IDirect3D9* (WINAPI* Direct3DCreate9Func)(UINT sdkver);
 
-	Direct3DCreate9Func d3d9create_fun = (Direct3DCreate9Func)GetProcAddress(custom_d3d_module, "Direct3DCreate9");
+	Direct3DCreate9Func d3d9create_fun = (Direct3DCreate9Func)GetProcAddress(custom_d3d9_module, "Direct3DCreate9");
 
 	if (!d3d9create_fun)
 	{
@@ -85,14 +87,14 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 	if (GetD3D11CustomLib)
 	{
 		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading custom lib from D3D_wrapper_custom_d3d11_lib_query");
-		custom_d3d_module = LoadLibraryW(GetD3D11CustomLib());
+		custom_d3d11_module = LoadLibraryW(GetD3D11CustomLib());
 	}
 	else {
 		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading system d3d11");
-		custom_d3d_module = LoadLibraryW(infoBuf);
+		custom_d3d11_module = LoadLibraryW(infoBuf);
 	}
 
-	if (!custom_d3d_module)
+	if (!custom_d3d11_module)
 	{
 		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"d3d11 library failed to load");
 		return 0;
@@ -100,7 +102,7 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 
 	typedef HRESULT (WINAPI* D3D11CreateDeviceAndSwapChainFunc)(DX11_CREATE_FDEF);
 
-	D3D11CreateDeviceAndSwapChainFunc d3d11create_fun = (D3D11CreateDeviceAndSwapChainFunc)GetProcAddress(custom_d3d_module, "D3D11CreateDeviceAndSwapChain");
+	D3D11CreateDeviceAndSwapChainFunc d3d11create_fun = (D3D11CreateDeviceAndSwapChainFunc)GetProcAddress(custom_d3d11_module, "D3D11CreateDeviceAndSwapChain");
 
 	if (!d3d11create_fun)
 	{
@@ -126,6 +128,73 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 	}
 
 	return res;
+}
+
+static int insideDXGICreate = 0;
+
+HRESULT OnDXGICreate(UINT ver, UINT Flags, REFIID riid, void** ppFactory)
+{
+	typedef HRESULT(WINAPI* DXGIFactoryCreate0)(REFIID riid, void** ppFactory);
+	typedef HRESULT(WINAPI* DXGIFactoryCreate1)(REFIID riid, void** ppFactory);
+	typedef HRESULT(WINAPI* DXGIFactoryCreate2)(UINT Flags, REFIID riid, void** ppFactory);
+
+	wchar_t infoBuf[4096];
+	GetSystemDirectory(infoBuf, 4096);
+	lstrcatW(infoBuf, L"\\dxgi.dll");
+
+	wchar_t* (*GetDXGICustomLib)() = (wchar_t* (*)())gAPI->query_function(gAPI->hash_name(L"D3D_wrapper_custom_dxgi_lib_query"));
+
+
+	if (GetDXGICustomLib)
+	{
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"Loading custom lib from D3D_wrapper_custom_dxgi_lib_query");
+		custom_dxgi_module = LoadLibraryW(GetDXGICustomLib());
+	}
+	else {
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"Loading system dxgi");
+		custom_dxgi_module = LoadLibraryW(infoBuf);
+	}
+
+	if (!custom_dxgi_module)
+	{
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"dxgi library failed to load");
+		return 0;
+	}
+
+
+	DXGIFactoryCreate0 origDXGI0 = (DXGIFactoryCreate0)GetProcAddress(custom_dxgi_module, "CreateDXGIFactory");
+	DXGIFactoryCreate1 origDXGI1 = (DXGIFactoryCreate1)GetProcAddress(custom_dxgi_module, "CreateDXGIFactory1");
+	DXGIFactoryCreate2 origDXGI2 = (DXGIFactoryCreate2)GetProcAddress(custom_dxgi_module, "CreateDXGIFactory2");
+
+	HRESULT ret;
+
+	++insideDXGICreate;
+	switch (ver)
+	{
+	case 0:
+		ret = origDXGI0(riid, ppFactory);
+		break;
+	case 1:
+		ret = origDXGI1(riid, ppFactory);
+		break;
+	case 2:
+		ret = origDXGI2(Flags, riid, ppFactory);
+		break;
+	}
+	--insideDXGICreate;
+
+	if (ret != S_OK)
+	{
+		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"CreateDXGIFactory failed");
+		return 0;
+	}
+
+	if (insideDXGICreate == 0)
+	{
+		*ppFactory = wrap_CreateDXGI(*ppFactory);
+	}
+
+	return ret;
 }
 
 gw2al_addon_dsc* gw2addon_get_description()
@@ -254,6 +323,7 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 
 	gAPI->register_function(&OnD3D9Create, GW2AL_CORE_FUNN_D3DCREATE_HOOK);
 	gAPI->register_function(&OnD3D11Create, GW2AL_CORE_FUNN_D3D11CREATE_HOOK);
+	gAPI->register_function(&OnDXGICreate, GW2AL_CORE_FUNN_DXGICREATE_HOOK);
 	gAPI->register_function(&d3d9_wrapper_enable_event, eventEnableProcName);
 
 	wrap_InitEvents();
@@ -322,8 +392,8 @@ gw2al_api_ret gw2addon_unload(int gameExiting)
 	gAPI->unregister_function(eventEnableProcName);
 	gAPI->unregister_function(GW2AL_CORE_FUNN_D3DCREATE_HOOK);
 
-	if (custom_d3d_module)
-		FreeLibrary(custom_d3d_module);
+	if (custom_d3d11_module)
+		FreeLibrary(custom_d3d11_module);
 
 	return GW2AL_OK;
 }

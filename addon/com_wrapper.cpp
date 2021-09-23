@@ -143,6 +143,11 @@ IDXGISwapChain* wrap_CreateSwapchain(IDXGISwapChain* origSwc)
 	return (IDXGISwapChain*)ret;
 }
 
+void* wrap_CreateDXGI(void* origDXGI)
+{
+	return origDXGI;
+}
+
 void wrap_SwitchMethod(d3d9_vtable_method method, vtable_wrap_mode mode)
 {
 	g_main_vtable[method] = wrap_vtable_arr[mode][method];
