@@ -10,6 +10,54 @@ WRAPPED_METH_DECL_(ULONG, WRAP_METH_NAME)(WRAPPED_THIS) WRAP_CALLTHRU_V0 CUSTOM_
 WRAPPED_METH_DECL_(ULONG, WRAP_METH_NAME)(WRAPPED_THIS) WRAP_CALLTHRU_V0 CUSTOM_ENDLINE_DEF 
 #undef WRAP_METH_NAME
 
+
+//obj
+
+#define WRAP_METH_NAME SetPrivateData
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  REFGUID v1,
+            /* [in] */ UINT v2,
+            /* [annotation][in] */ 
+            _In_reads_bytes_(DataSize)  const void *v3) WRAP_CALLTHRU_V3 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME SetPrivateDataInterface
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  REFGUID v1,
+            /* [annotation][in] */ 
+            _In_opt_  const IUnknown *v2) WRAP_CALLTHRU_V2 CUSTOM_ENDLINE_DEF 
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME GetPrivateData
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  REFGUID v1,
+            /* [annotation][out][in] */ 
+            _Inout_  UINT *v2,
+            /* [annotation][out] */ 
+            _Out_writes_bytes_(*pDataSize)  void *v3) WRAP_CALLTHRU_V3 CUSTOM_ENDLINE_DEF 
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME GetParent
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  REFIID v1,
+            /* [annotation][retval][out] */ 
+            _COM_Outptr_  void **v2) WRAP_CALLTHRU_V2 CUSTOM_ENDLINE_DEF 
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME GetDevice
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  REFIID v1,
+            /* [annotation][retval][out] */ 
+            _COM_Outptr_  void **v2) WRAP_CALLTHRU_V2 CUSTOM_ENDLINE_DEF 
+#undef WRAP_METH_NAME
+
+//swapchain
+
         #define WRAP_METH_NAME Present
         WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
             /* [in] */ UINT v1,
