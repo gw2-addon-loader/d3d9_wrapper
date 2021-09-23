@@ -124,7 +124,7 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 	{
 		*ppDevice = wrap_CreateDevice11(*ppDevice);
 		if (ppSwapChain)
-			*ppSwapChain = wrap_CreateSwapchain(*ppSwapChain);
+			*ppSwapChain = (IDXGISwapChain*)wrap_CreateSwapchain((IDXGISwapChain4*)*ppSwapChain);
 	}
 
 	return res;
@@ -222,10 +222,38 @@ typedef struct d3d9_dev_Release_cp {
 		ID3D11Device5* d11;
 	} udev;
 } d3d9_dev_Release_cp;
+
+typedef struct dxgi_CreateSwapChain_cp {
+	IDXGIFactory5* dxgi;
+	IUnknown* inDevice;
+	DXGI_SWAP_CHAIN_DESC* desc;
+	IDXGISwapChain4** ppSwapchain;
+} dxgi_CreateSwapChain_cp;
+
+typedef struct iunk_QueryInterface_cp {
+	IUnknown* base;
+	REFIID iid;
+	void** rptr;
+} iunk_QueryInterface_cp;
 #pragma pack(pop)
 
 IDirect3DDevice9* hwDevice = nullptr;
 ID3D11Device5* hwDevice11 = nullptr;
+
+void OnPostSWCQueryInterface(wrap_event_data* data)
+{
+	//FIXME: looks like wrapped object will leak
+	iunk_QueryInterface_cp* apiParams = (iunk_QueryInterface_cp*)data->stackPtr;
+
+	*apiParams->rptr = (IDXGISwapChain4*)wrap_CreateSwapchain((IDXGISwapChain4*)*apiParams->rptr);
+}
+
+void OnPostDXGICreateSwapChain(wrap_event_data* data)
+{
+	dxgi_CreateSwapChain_cp* apiParams = (dxgi_CreateSwapChain_cp*)data->stackPtr;
+
+	*apiParams->ppSwapchain = wrap_CreateSwapchain(*apiParams->ppSwapchain);
+}
 
 void OnPostDeviceCreate(wrap_event_data* data)
 {
@@ -363,11 +391,36 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 		0
 	);
 
+	gAPI->watch_event(
+		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_DXGI_Release")),
+		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		(gw2al_api_event_handler)&OnPostObjWrappedRelease,
+		0
+	);
+
+	gAPI->watch_event(
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_DXGI_CreateSwapChain")),
+		gAPI->hash_name(L"d3d9 wrapper"),
+		(gw2al_api_event_handler)&OnPostDXGICreateSwapChain,
+		-1
+	);
+
+	gAPI->watch_event(
+		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_SWC_QueryInterface")),
+		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		(gw2al_api_event_handler)&OnPostSWCQueryInterface,
+		-1
+	);
+
 	d3d9_wrapper_enable_event(METH_OBJ_CreateDevice, WRAP_CB_POST);
+	d3d9_wrapper_enable_event(METH_DXGI_CreateSwapChain, WRAP_CB_POST);
+	d3d9_wrapper_enable_event(METH_SWC_QueryInterface, WRAP_CB_POST);
+
 	d3d9_wrapper_enable_event(METH_OBJ_Release, WRAP_CB_POST);
 	d3d9_wrapper_enable_event(METH_DEV_Release, WRAP_CB_POST);
 	d3d9_wrapper_enable_event(METH_DEV11_Release, WRAP_CB_POST);
 	d3d9_wrapper_enable_event(METH_SWC_Release, WRAP_CB_POST);
+	d3d9_wrapper_enable_event(METH_DXGI_Release, WRAP_CB_POST);
 
 	return GW2AL_OK;
 }
