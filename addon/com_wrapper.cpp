@@ -23,6 +23,10 @@ static void* wrap_pass_vtable[METHOD_WRAP_COUNT+1] = {
 #include "com_wrapper_swc_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
+#define WRAPPED_METH_PREFIX(b) wrap_pass_dxgi_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dxgi_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
 	0
 };
 
@@ -42,6 +46,10 @@ static void* wrap_pre_vtable[METHOD_WRAP_COUNT+1] = {
 
 #define WRAPPED_METH_PREFIX(b) wrap_pre_swc_##b, __SPECIAL_IGNORANCE
 #include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_pre_dxgi_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dxgi_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
 	0
@@ -65,6 +73,10 @@ static void* wrap_post_vtable[METHOD_WRAP_COUNT+1] = {
 #include "com_wrapper_swc_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
+#define WRAPPED_METH_PREFIX(b) wrap_post_dxgi_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dxgi_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
 	0
 };
 
@@ -84,6 +96,10 @@ static void* wrap_prepost_vtable[METHOD_WRAP_COUNT+1] = {
 
 #define WRAPPED_METH_PREFIX(b) wrap_prepost_swc_##b, __SPECIAL_IGNORANCE
 #include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) wrap_post_dxgi_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dxgi_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
 	0
@@ -145,7 +161,12 @@ IDXGISwapChain* wrap_CreateSwapchain(IDXGISwapChain* origSwc)
 
 void* wrap_CreateDXGI(void* origDXGI)
 {
-	return origDXGI;
+	wrapped_com_obj* ret = (wrapped_com_obj*)malloc(sizeof(wrapped_com_obj));
+
+	ret->vtable = (com_vtable*)&g_main_vtable[METH_DXGI_QueryInterface];
+	ret->orig_dxgi = (IDXGIFactory5*)origDXGI;
+
+	return (void*)ret;
 }
 
 void wrap_SwitchMethod(d3d9_vtable_method method, vtable_wrap_mode mode)
@@ -207,6 +228,14 @@ void wrap_InitEvents()
 		g_main_vtable[METH_SWC_##b] = wrap_pass_vtable[METH_SWC_##b]; \
 		__SPECIAL_IGNORANCE
 	#include "com_wrapper_swc_methods.inc"
+	#undef WRAPPED_METH_PREFIX
+
+	#define WRAPPED_METH_PREFIX(b) \
+		 preCallEvents[METH_DXGI_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(DXGI_##b, PRE_))); \
+		postCallEvents[METH_DXGI_##b] = gAPI->query_event(gAPI->hash_name((wchar_t*)EVENT_NAME_STR(DXGI_##b, POST_))); \
+		g_main_vtable[METH_DXGI_##b] = wrap_pass_vtable[METH_DXGI_##b]; \
+		__SPECIAL_IGNORANCE
+	#include "com_wrapper_dxgi_methods.inc"
 	#undef WRAPPED_METH_PREFIX
 
 }

@@ -14,7 +14,7 @@ typedef struct wrapped_com_obj {
 		IDirect3DDevice9* orig_dev;
 		ID3D11Device5* orig_dev11;
 		IDXGISwapChain* orig_swc;
-		IDXGIFactory* orig_dxgi;
+		IDXGIFactory5* orig_dxgi;
 	};
 } wrapped_com_obj;
 #pragma pack(pop)
@@ -73,6 +73,10 @@ typedef enum d3d9_vtable_method {
 
 #define WRAPPED_METH_PREFIX(b) METH_SWC_##b, __SPECIAL_IGNORANCE
 #include "com_wrapper_swc_methods.inc"
+#undef WRAPPED_METH_PREFIX
+
+#define WRAPPED_METH_PREFIX(b) METH_DXGI_##b, __SPECIAL_IGNORANCE
+#include "com_wrapper_dxgi_methods.inc"
 #undef WRAPPED_METH_PREFIX
 
 	METHOD_WRAP_COUNT
