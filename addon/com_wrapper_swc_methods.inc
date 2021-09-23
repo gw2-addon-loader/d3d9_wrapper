@@ -187,3 +187,93 @@ WRAPPED_METH_DECL_(ULONG, WRAP_METH_NAME)(WRAPPED_THIS) WRAP_CALLTHRU_V0 CUSTOM_
             /* [annotation][out] */ 
             _Out_  DXGI_MODE_ROTATION *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
 #undef WRAP_METH_NAME
+
+//swapchain2
+
+#define WRAP_METH_NAME SetSourceSize
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            UINT v1,
+            UINT v2) WRAP_CALLTHRU_V2 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME GetSourceSize
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [annotation][out] */ 
+            _Out_  UINT *v1,
+            /* [annotation][out] */ 
+            _Out_  UINT *v2) WRAP_CALLTHRU_V2 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME SetMaximumFrameLatency
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            UINT v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME GetMaximumFrameLatency
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [annotation][out] */ 
+            _Out_  UINT *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME GetFrameLatencyWaitableObject
+        WRAPPED_METH_DECL_(HANDLE, WRAP_METH_NAME) ( WRAPPED_THIS) WRAP_CALLTHRU_V0 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME SetMatrixTransform
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            const DXGI_MATRIX_3X2_F *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME GetMatrixTransform
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [annotation][out] */ 
+            _Out_  DXGI_MATRIX_3X2_F *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+//swapchain3
+
+#define WRAP_METH_NAME GetCurrentBackBufferIndex
+        WRAPPED_METH_DECL_(UINT, WRAP_METH_NAME) ( WRAPPED_THIS)  WRAP_CALLTHRU_V0 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME CheckColorSpaceSupport
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [annotation][in] */ 
+            _In_  DXGI_COLOR_SPACE_TYPE v1,
+            /* [annotation][out] */ 
+            _Out_  UINT *v2) WRAP_CALLTHRU_V2 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME SetColorSpace1
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [annotation][in] */ 
+            _In_  DXGI_COLOR_SPACE_TYPE v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME  
+
+#define WRAP_METH_NAME ResizeBuffers1
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [annotation][in] */ 
+            _In_  UINT v1,
+            /* [annotation][in] */ 
+            _In_  UINT v2,
+            /* [annotation][in] */ 
+            _In_  UINT v3,
+            /* [annotation][in] */ 
+            _In_  DXGI_FORMAT v4,
+            /* [annotation][in] */ 
+            _In_  UINT v5,
+            /* [annotation][in] */ 
+            _In_reads_(BufferCount)  const UINT *v6,
+            /* [annotation][in] */ 
+            _In_reads_(BufferCount)  IUnknown *const *v7) WRAP_CALLTHRU_V7 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+//swapchain4
+
+#define WRAP_METH_NAME SetHDRMetaData
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [annotation][in] */ 
+            _In_  DXGI_HDR_METADATA_TYPE v1,
+            /* [annotation][in] */ 
+            _In_  UINT v2,
+            /* [annotation][size_is][in] */ 
+            _In_reads_opt_(Size)  void *v3) WRAP_CALLTHRU_V3 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
