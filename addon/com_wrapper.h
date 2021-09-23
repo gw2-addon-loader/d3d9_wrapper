@@ -13,7 +13,7 @@ typedef struct wrapped_com_obj {
 		IDirect3D9* orig_obj;
 		IDirect3DDevice9* orig_dev;
 		ID3D11Device5* orig_dev11;
-		IDXGISwapChain* orig_swc;
+		IDXGISwapChain4* orig_swc;
 		IDXGIFactory5* orig_dxgi;
 	};
 } wrapped_com_obj;
@@ -96,7 +96,7 @@ typedef enum vtable_wrap_mode {
 IDirect3DDevice9* wrap_CreateDevice(IDirect3DDevice9* origDev);
 IDirect3D9* wrap_CreateObj(IDirect3D9* origObj);
 ID3D11Device5* wrap_CreateDevice11(ID3D11Device5* origDev);
-IDXGISwapChain* wrap_CreateSwapchain(IDXGISwapChain* origSwc);
+IDXGISwapChain4* wrap_CreateSwapchain(IDXGISwapChain4* origSwc);
 void* wrap_CreateDXGI(void* origDXGI);
 
 typedef struct wrap_event_data {

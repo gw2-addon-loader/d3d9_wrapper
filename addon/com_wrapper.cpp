@@ -149,14 +149,14 @@ ID3D11Device5* wrap_CreateDevice11(ID3D11Device5* origDev)
 	return (ID3D11Device5*)ret;
 }
 
-IDXGISwapChain* wrap_CreateSwapchain(IDXGISwapChain* origSwc)
+IDXGISwapChain4* wrap_CreateSwapchain(IDXGISwapChain4* origSwc)
 {
 	wrapped_com_obj* ret = (wrapped_com_obj*)malloc(sizeof(wrapped_com_obj));
 
 	ret->vtable = (com_vtable*)&g_main_vtable[METH_SWC_QueryInterface];
 	ret->orig_swc = origSwc;
 
-	return (IDXGISwapChain*)ret;
+	return (IDXGISwapChain4*)ret;
 }
 
 void* wrap_CreateDXGI(void* origDXGI)

@@ -69,3 +69,73 @@ WRAPPED_METH_DECL_(ULONG, WRAP_METH_NAME)(WRAPPED_THIS) WRAP_CALLTHRU_V0 CUSTOM_
             /* [annotation][out] */ 
             _Out_  UINT *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
 #undef WRAP_METH_NAME
+
+//swapchain1
+
+#define WRAP_METH_NAME GetDesc1
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][out] */ 
+            _Out_  DXGI_SWAP_CHAIN_DESC1 *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+        
+#define WRAP_METH_NAME GetFullscreenDesc
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][out] */ 
+            _Out_  DXGI_SWAP_CHAIN_FULLSCREEN_DESC *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+        
+#define WRAP_METH_NAME GetHwnd
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][out] */ 
+            _Out_  HWND *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME GetCoreWindow
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  REFIID v1,
+            /* [annotation][out] */ 
+            _COM_Outptr_  void **v2) WRAP_CALLTHRU_V2 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+        
+#define WRAP_METH_NAME Present1
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_ 
+            /* [in] */ UINT v1,
+            /* [in] */ UINT v2,
+            /* [annotation][in] */ 
+            _In_  const DXGI_PRESENT_PARAMETERS *v3) WRAP_CALLTHRU_V3 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME IsTemporaryMonoSupported
+        WRAPPED_METH_DECL_(BOOL, WRAP_METH_NAME)( WRAPPED_THIS ) WRAP_CALLTHRU_V0 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+        
+#define WRAP_METH_NAME GetRestrictToOutput
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][out] */ 
+            _Out_  IDXGIOutput **v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+        
+#define WRAP_METH_NAME SetBackgroundColor
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  const DXGI_RGBA *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME GetBackgroundColor
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][out] */ 
+            _Out_  DXGI_RGBA *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+
+#define WRAP_METH_NAME SetRotation
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][in] */ 
+            _In_  DXGI_MODE_ROTATION v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
+        
+#define WRAP_METH_NAME GetRotation
+        WRAPPED_METH_DECL(WRAP_METH_NAME)( WRAPPED_THIS_
+            /* [annotation][out] */ 
+            _Out_  DXGI_MODE_ROTATION *v1) WRAP_CALLTHRU_V1 CUSTOM_ENDLINE_DEF
+#undef WRAP_METH_NAME
