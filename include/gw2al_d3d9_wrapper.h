@@ -1,4 +1,6 @@
 
+#define D3D_WRAPPER_DEP_ENTRY {	L"d3d9_wrapper", L"Wrapper for d3d API that includes hooking and custom d3d loading", 2, 0, 1, 0 }
+
 typedef enum D3D9_wrapper_mode {
 	WRAP_PASSTHRU = 0,
 	WRAP_CB_PRE = 1,
