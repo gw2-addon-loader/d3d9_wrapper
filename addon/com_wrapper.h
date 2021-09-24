@@ -99,6 +99,8 @@ ID3D11Device5* wrap_CreateDevice11(ID3D11Device5* origDev);
 IDXGISwapChain4* wrap_CreateSwapchain(IDXGISwapChain4* origSwc);
 void* wrap_CreateDXGI(void* origDXGI);
 
+com_vtable* wrapped_Device11_vtable();
+
 typedef struct wrap_event_data {
 	void* ret;
 	wrapped_com_obj** stackPtr;

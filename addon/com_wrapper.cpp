@@ -139,6 +139,11 @@ IDirect3D9 * wrap_CreateObj(IDirect3D9 * origObj)
 	return (IDirect3D9*)ret;
 }
 
+com_vtable* wrapped_Device11_vtable()
+{
+	return (com_vtable*)&g_main_vtable[METH_DEV11_QueryInterface];
+}
+
 ID3D11Device5* wrap_CreateDevice11(ID3D11Device5* origDev)
 {
 	wrapped_com_obj * ret = (wrapped_com_obj*)malloc(sizeof(wrapped_com_obj));

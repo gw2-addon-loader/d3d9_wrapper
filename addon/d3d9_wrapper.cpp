@@ -248,6 +248,16 @@ void OnPostSWCQueryInterface(wrap_event_data* data)
 	*apiParams->rptr = (IDXGISwapChain4*)wrap_CreateSwapchain((IDXGISwapChain4*)*apiParams->rptr);
 }
 
+void OnPreDXGICreateSwapChain(wrap_event_data* data)
+{
+	dxgi_CreateSwapChain_cp* apiParams = (dxgi_CreateSwapChain_cp*)data->stackPtr;
+	wrapped_com_obj* wrappedDev = (wrapped_com_obj*)apiParams->inDevice;
+	if (wrappedDev->vtable == wrapped_Device11_vtable())
+		apiParams->inDevice = (IUnknown*)wrappedDev->orig_dev11;
+
+	*apiParams->ppSwapchain = wrap_CreateSwapchain(*apiParams->ppSwapchain);
+}
+
 void OnPostDXGICreateSwapChain(wrap_event_data* data)
 {
 	dxgi_CreateSwapChain_cp* apiParams = (dxgi_CreateSwapChain_cp*)data->stackPtr;
