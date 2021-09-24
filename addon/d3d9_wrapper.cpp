@@ -254,8 +254,6 @@ void OnPreDXGICreateSwapChain(wrap_event_data* data)
 	wrapped_com_obj* wrappedDev = (wrapped_com_obj*)apiParams->inDevice;
 	if (wrappedDev->vtable == wrapped_Device11_vtable())
 		apiParams->inDevice = (IUnknown*)wrappedDev->orig_dev11;
-
-	*apiParams->ppSwapchain = wrap_CreateSwapchain(*apiParams->ppSwapchain);
 }
 
 void OnPostDXGICreateSwapChain(wrap_event_data* data)
@@ -416,6 +414,15 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 	);
 
 	gAPI->watch_event(
+		gAPI->query_event(gAPI->hash_name(L"D3D9_PRE_DXGI_CreateSwapChain")),
+		gAPI->hash_name(L"d3d9 wrapper"),
+		(gw2al_api_event_handler)&OnPreDXGICreateSwapChain,
+		10000
+	);
+
+	
+
+	gAPI->watch_event(
 		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_SWC_QueryInterface")),
 		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostSWCQueryInterface,
@@ -423,7 +430,7 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 	);
 
 	d3d9_wrapper_enable_event(METH_OBJ_CreateDevice, WRAP_CB_POST);
-	d3d9_wrapper_enable_event(METH_DXGI_CreateSwapChain, WRAP_CB_POST);
+	d3d9_wrapper_enable_event(METH_DXGI_CreateSwapChain, WRAP_CB_PRE_POST);
 	d3d9_wrapper_enable_event(METH_SWC_QueryInterface, WRAP_CB_POST);
 
 	d3d9_wrapper_enable_event(METH_OBJ_Release, WRAP_CB_POST);
