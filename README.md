@@ -53,7 +53,7 @@ void DrawSomethingBeforePresent(D3D9_wrapper_event_data* evd)
 Look include/gw2al_d3d9_wrapper.h for details.
 
 # Installation
-   
-1. Download the [latest release](https://github.com/gw2-addon-loader/d3d9_wrapper/releases/latest) (ZIP archive d3d9_wrapper_*.zip).
-2. Ensure there is an "addons" folder inside your GW2 installation directory. If there is not, create one yourself.
-3. Extract the ZIP archive's contents (folder d3d9_wrapper) and move the folder to \<GW2 installation directory\>/addons.
+
+1. Download and extract the archive `d3d9_wrapper_*.zip` found in the [latest release](https://github.com/gw2-addon-loader/d3d9_wrapper/releases/latest).
+2. Ensure there is an `addons` folder inside your GW2 installation directory. If there is not, create one yourself. With the default game install path, the result would be `C:\Program Files\Guild Wars 2\addons`.
+3. Place the extracted folder `d3d9_wrapper` inside the `addons` folder.
