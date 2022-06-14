@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "build_version.h"
+#include <string>
 
 //gw2addon_get_description
 //gw2addon_load
@@ -32,21 +33,21 @@ IDirect3D9* OnD3D9Create()
 	GetSystemDirectory(infoBuf, 4096);
 	lstrcatW(infoBuf, L"\\d3d9.dll");
 
-	wchar_t* (*GetD3D9CustomLib)() = (wchar_t* (*)())gAPI->query_function(gAPI->hash_name((wchar_t*)L"D3D_wrapper_custom_d3d9_lib_query"));
+	wchar_t* (*GetD3D9CustomLib)() = (wchar_t* (*)())gAPI->query_function(gAPI->hash_name(L"D3D_wrapper_custom_d3d9_lib_query"));
 
 	if (GetD3D9CustomLib)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading custom lib from D3D_wrapper_custom_d3d9_lib_query");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"Loading custom lib from D3D_wrapper_custom_d3d9_lib_query");
 		custom_d3d9_module = LoadLibraryW(GetD3D9CustomLib());
 	}
 	else {
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading system d3d9");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"Loading system d3d9");
 		custom_d3d9_module = LoadLibraryW(infoBuf);
 	}
 	
 	if (!custom_d3d9_module)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"d3d9 library failed to load");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"d3d9 library failed to load");
 		return 0;
 	}
 
@@ -56,7 +57,7 @@ IDirect3D9* OnD3D9Create()
 
 	if (!d3d9create_fun)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"no Direct3DCreate9 found in d3d9.dll");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"no Direct3DCreate9 found in d3d9.dll");
 		return 0;
 	}
 
@@ -64,7 +65,7 @@ IDirect3D9* OnD3D9Create()
 
 	if (!res)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Direct3DCreate9 failed");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"Direct3DCreate9 failed");
 		return 0;
 	}
 	
@@ -82,21 +83,21 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 	GetSystemDirectory(infoBuf, 4096);
 	lstrcatW(infoBuf, L"\\d3d11.dll");
 
-	wchar_t* (*GetD3D11CustomLib)() = (wchar_t* (*)())gAPI->query_function(gAPI->hash_name((wchar_t*)L"D3D_wrapper_custom_d3d11_lib_query"));
+	wchar_t* (*GetD3D11CustomLib)() = (wchar_t* (*)())gAPI->query_function(gAPI->hash_name(L"D3D_wrapper_custom_d3d11_lib_query"));
 
 	if (GetD3D11CustomLib)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading custom lib from D3D_wrapper_custom_d3d11_lib_query");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"Loading custom lib from D3D_wrapper_custom_d3d11_lib_query");
 		custom_d3d11_module = LoadLibraryW(GetD3D11CustomLib());
 	}
 	else {
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"Loading system d3d11");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"Loading system d3d11");
 		custom_d3d11_module = LoadLibraryW(infoBuf);
 	}
 
 	if (!custom_d3d11_module)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"d3d11 library failed to load");
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", L"d3d11 library failed to load");
 		return 0;
 	}
 
@@ -106,7 +107,7 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 
 	if (!d3d11create_fun)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"no D3D11CreateDeviceAndSwapChain found in d3d11.dll");
+		gAPI->log_text(LL_ERR, L"d3d9_wrapper", L"no D3D11CreateDeviceAndSwapChain found in d3d11.dll");
 		return 0;
 	}
 
@@ -116,7 +117,9 @@ HRESULT OnD3D11Create(DX11_CREATE_FDEF)
 
 	if (res != S_OK)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"D3D11CreateDeviceAndSwapChain failed");
+		wchar_t buf[1024];
+		wsprintfW(buf, L"D3D11CreateDeviceAndSwapChain failed: 0x%x", std::to_wstring(res).c_str());
+		gAPI->log_text(LL_ERR, L"d3d9_wrapper", buf);
 		return 0;
 	}
 
@@ -180,12 +183,16 @@ HRESULT OnDXGICreate(UINT ver, UINT Flags, REFIID riid, void** ppFactory)
 	case 2:
 		ret = origDXGI2(Flags, riid, ppFactory);
 		break;
+	default:
+		ret = E_UNEXPECTED;
 	}
 	--insideDXGICreate;
 
 	if (ret != S_OK)
 	{
-		gAPI->log_text(LL_INFO, (wchar_t*)L"d3d9_wrapper", (wchar_t*)L"CreateDXGIFactory failed");
+		wchar_t buf[1024];
+		wsprintfW(buf, L"CreateDXGIFactory failed: 0x%x", std::to_wstring(ret).c_str());
+		gAPI->log_text(LL_INFO, L"d3d9_wrapper", buf);
 		return 0;
 	}
 
@@ -347,7 +354,7 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 {
 	gAPI = core_api;
 
-	eventEnableProcName = gAPI->hash_name((wchar_t*)L"D3D_wrapper_enable_event");
+	eventEnableProcName = gAPI->hash_name(L"D3D_wrapper_enable_event");
 
 	gAPI->register_function(&OnD3D9Create, GW2AL_CORE_FUNN_D3DCREATE_HOOK);
 	gAPI->register_function(&OnD3D11Create, GW2AL_CORE_FUNN_D3D11CREATE_HOOK);
@@ -357,43 +364,43 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 	wrap_InitEvents();
 	
 	gAPI->watch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_CreateDevice")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_OBJ_CreateDevice")),
+		gAPI->hash_name(L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostDeviceCreate,
 		-1
 	);
 
 	gAPI->watch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_DEV_Release")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_DEV_Release")),
+		gAPI->hash_name(L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostWrappedRelease,
 		0
 	);
 
 	gAPI->watch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_Release")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_OBJ_Release")),
+		gAPI->hash_name(L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostObjWrappedRelease,
 		0
 	);
 
 	gAPI->watch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_DEV11_Release")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_DEV11_Release")),
+		gAPI->hash_name(L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostWrapped11Release,
 		0
 	);
 
 	gAPI->watch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_SWC_Release")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_SWC_Release")),
+		gAPI->hash_name(L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostObjWrappedRelease,
 		0
 	);
 
 	gAPI->watch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_DXGI_Release")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_DXGI_Release")),
+		gAPI->hash_name(L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostObjWrappedRelease,
 		0
 	);
@@ -406,8 +413,8 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 	);
 
 	gAPI->watch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_SWC_QueryInterface")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper"),
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_SWC_QueryInterface")),
+		gAPI->hash_name(L"d3d9 wrapper"),
 		(gw2al_api_event_handler)&OnPostSWCQueryInterface,
 		-1
 	);
@@ -428,18 +435,18 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 gw2al_api_ret gw2addon_unload(int gameExiting)
 {
 	gAPI->unwatch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_CreateDevice")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper")
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_OBJ_CreateDevice")),
+		gAPI->hash_name(L"d3d9 wrapper")
 	);
 
 	gAPI->unwatch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_DEV_Release")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper")
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_DEV_Release")),
+		gAPI->hash_name(L"d3d9 wrapper")
 	);
 
 	gAPI->unwatch_event(
-		gAPI->query_event(gAPI->hash_name((wchar_t*)L"D3D9_POST_OBJ_Release")),
-		gAPI->hash_name((wchar_t*)L"d3d9 wrapper")
+		gAPI->query_event(gAPI->hash_name(L"D3D9_POST_OBJ_Release")),
+		gAPI->hash_name(L"d3d9 wrapper")
 	);
 
 	gAPI->unregister_function(eventEnableProcName);
